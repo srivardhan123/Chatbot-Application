@@ -10,6 +10,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [provider, setProvider] = useState("google");
 
   const loadConversations = useCallback(async () => {
     const { data } = await api.listConversations();
@@ -43,7 +44,7 @@ function App() {
     setMessages((prev) => [...prev, { id: tempId, role: "user", content }]);
     setLoading(true);
     try {
-      const { ok, data } = await api.sendMessage(activeId, content);
+      const { ok, data } = await api.sendMessage(activeId, content, provider);
       setMessages((prev) => {
         const withoutTemp = prev.filter((m) => m.id !== tempId);
         if (ok && data.assistant_message) {
@@ -75,6 +76,8 @@ function App() {
         loading={loading}
         error={error}
         disabled={!activeId}
+        provider={provider}
+        onProviderChange={setProvider}
       />
     </div>
   );

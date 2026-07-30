@@ -242,6 +242,29 @@ See **ARCHITECTURE.md** for detailed schema design, ingestion flow diagrams, log
 
 ---
 
+## Bonus Features Implemented
+
+### ✅ Multi-Provider Support (Architecture + Mocking)
+This project demonstrates a **provider-agnostic logging architecture** that works with multiple LLM vendors:
+
+- **Google Gemini** — Real integration (free tier via Google AI Studio, no billing)
+- **Anthropic Claude** — Mocked responses (demonstrates architecture; real calls require paid API key)
+- **OpenAI GPT-4** — Mocked responses (demonstrates architecture; real calls require paid API key)
+
+**Why mock Claude and GPT-4?** They have no free API tiers; paid keys cost $$. This approach:
+- ✅ Proves the provider abstraction works
+- ✅ Shows architectural flexibility without cost
+- ✅ Keeps the demo fully free (only Gemini uses its free tier)
+- ✅ Takes 10 minutes to swap mocks for real SDK calls when API keys are available
+
+**Implementation details**: 
+- `LoggedInferenceClient` (renamed from `LoggedGeminiClient`) accepts `provider` parameter
+- Query param: `?provider=anthropic` or `?provider=openai` for testing
+- All logging is identical regardless of provider (same inference_logs table)
+- Mocked responses are intelligent (detect question type and respond appropriately)
+
+---
+
 ## What I'd Improve with More Time
 
 ### Testing (Critical - 2-3 days)
@@ -254,11 +277,31 @@ See **ARCHITECTURE.md** for detailed schema design, ingestion flow diagrams, log
 - **Ingestion tests**: Invalid payloads, missing fields, type mismatches
 - **Code coverage**: Target 80%+ for models/views/SDK; UI coverage lower priority
 
+### Multi-Provider Support ⭐ IMPLEMENTED
+- **google/gemini** (real, free tier) — Uses Google AI Studio free API key (no billing required)
+- **anthropic/claude** (mocked) — Demonstrates architecture; real calls need paid API key
+- **openai/gpt-4** (mocked) — Demonstrates architecture; real calls need paid API key
+
+**Why mock Claude and GPT-4?** They don't have free tiers; paid API keys required ($). This approach shows the provider abstraction works while keeping the demo cost-free. To use real Claude/GPT-4: swap mock methods with actual SDK calls (10-min change).
+
+**Usage:**
+```bash
+# Default: Gemini (free)
+curl -X POST http://127.0.0.1:8000/api/conversations/{id}/messages/ -d '{"content":"hello"}'
+
+# Try Claude (mocked)
+curl -X POST "http://127.0.0.1:8000/api/conversations/{id}/messages/?provider=anthropic" -d '{"content":"hello"}'
+
+# Try GPT-4 (mocked)
+curl -X POST "http://127.0.0.1:8000/api/conversations/{id}/messages/?provider=openai" -d '{"content":"hello"}'
+```
+
+All providers log identically: provider name, model, latency, tokens, status, errors.
+
 ### Near-term (1-2 days)
 - **Streaming responses**: SSE so tokens appear as they arrive (not as final block)
 - **Token-based context truncation**: Use `tiktoken` to count tokens; truncate at 2000 tokens, not 20 messages
-- **Docker Compose**: One `docker-compose up` for full stack (Django + Postgres + Redis)
-- **Postgres swap**: Support `DATABASE_URL` env var for easy local Postgres testing
+- **Postgres swap**: Support `DATABASE_URL` env var for easy local Postgres testing (bonus: Docker Compose makes this trivial)
 
 ### Medium-term (1 week)
 - **Multi-provider abstraction**: Parameterize provider (Claude, GPT-4, etc.) with a pluggable interface

@@ -27,8 +27,9 @@ export function listMessages(conversationId) {
   return request(`/conversations/${conversationId}/messages/`);
 }
 
-export function sendMessage(conversationId, content) {
-  return request(`/conversations/${conversationId}/messages/`, {
+export function sendMessage(conversationId, content, provider = "google") {
+  const url = `/conversations/${conversationId}/messages/?provider=${provider}`;
+  return request(url, {
     method: "POST",
     body: JSON.stringify({ content }),
   });

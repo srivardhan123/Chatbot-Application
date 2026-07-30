@@ -10,9 +10,10 @@ from .serializers import (
     MessageCreateSerializer,
     InferenceLogSerializer,
 )
-from .sdk.logged_client import LoggedGeminiClient
+from .sdk.logged_client import LoggedInferenceClient
 
 HISTORY_LIMIT = 20
+DEFAULT_PROVIDER = "google"  # "google" | "anthropic" | "openai"
 
 
 class ConversationListCreateView(generics.ListCreateAPIView):
@@ -42,7 +43,10 @@ class ConversationMessagesView(APIView):
         history = [{"role": m.role, "content": m.content} for m in recent]
 
         try:
-            client = LoggedGeminiClient()
+            # Support provider selection via query param: ?provider=anthropic or ?provider=openai
+            # Defaults to "google" (free tier). Others are mocked.
+            provider = request.query_params.get("provider", DEFAULT_PROVIDER).lower()
+            client = LoggedInferenceClient(provider=provider)
             reply_text = client.send(
                 session_id=str(conversation.id),
                 conversation_id=conversation.id,

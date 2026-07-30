@@ -81,6 +81,43 @@
   color: var(--text-muted);
 }
 
+.provider-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.provider-selector label {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.provider-selector select {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.provider-selector select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-window-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;
