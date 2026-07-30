@@ -20,6 +20,12 @@ This system demonstrates a clean separation of concerns:
 ✅ **Django admin** — free logs/conversations browser (no extra UI code needed)  
 ✅ **Error resilience** — logging failures never break the chat experience  
 
+### Demo Videos
+- **Frontend Demo** — Multi-turn chat, provider switching (Gemini → Claude → GPT-4), real-time logging
+- **Backend/Admin Demo** — Django admin tables (Conversations, Messages, InferenceLog), filtering by provider/status, metadata inspection
+
+See **ARCHITECTURE.md** for deep dive into design decisions and scaling.
+
 ---
 
 ## Quick Start
@@ -304,7 +310,6 @@ All providers log identically: provider name, model, latency, tokens, status, er
 - **Postgres swap**: Support `DATABASE_URL` env var for easy local Postgres testing (bonus: Docker Compose makes this trivial)
 
 ### Medium-term (1 week)
-- **Multi-provider abstraction**: Parameterize provider (Claude, GPT-4, etc.) with a pluggable interface
 - **PII redaction**: Detect/mask emails, phone numbers before storage (privacy compliance)
 - **Real-time dashboards**: WebSocket feed of logs → React dashboard (latency graphs, error rates)
 - **Conversation search**: Full-text search on messages + logs
@@ -399,7 +404,7 @@ This system demonstrates:
 - **Production readiness**: Error handling, CORS, DRF validation, audit-trail logs
 - **Clean architecture**: Frontend, backend API, SDK wrapper, and ingestion are decoupled layers
 
-All assignment requirements are met. The codebase is intentionally lean while being well-structured for extension.
+The codebase is intentionally lean while being well-structured for extension and production use.
 
 ---
 
